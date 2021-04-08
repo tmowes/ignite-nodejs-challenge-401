@@ -1,7 +1,7 @@
+import { AppError } from "../../../../shared/errors/AppError"
 import { InMemoryUsersRepository } from "../../../users/repositories/in-memory/InMemoryUsersRepository"
 import { OperationType } from "../../entities/Statement"
 import { InMemoryStatementsRepository } from "../../repositories/in-memory/InMemoryStatementsRepository"
-import { CreateStatementError } from "./CreateStatementError"
 
 import { CreateStatementUseCase } from "./CreateStatementUseCase"
 
@@ -16,49 +16,6 @@ describe('Create Statement', () => {
     inMemoryUsersRepository = new InMemoryUsersRepository()
     createStatementUseCase = new CreateStatementUseCase(inMemoryUsersRepository, inMemoryStatementsRepository)
   })
-  it('should be able to create a new deposit', async () => {
-    const createdUser = await inMemoryUsersRepository.create({
-      name: "User Name Test",
-      email: "useremail@testexample.com",
-      password: "User Password Test",
-    })
-
-    const createDepositStatement = {
-      user_id: createdUser.id,
-      type: OperationType.DEPOSIT,
-      amount: 99,
-      description: "Statement Description Test",
-    }
-
-    const depositStatementCreated = await createStatementUseCase.execute(createDepositStatement)
-
-    expect(depositStatementCreated).toHaveProperty('id')
-  })
-
-  it('should be able to create a new withdraw with funds', async () => {
-    const createdUser = await inMemoryUsersRepository.create({
-      name: "User2 Name Test",
-      email: "user2email@testexample.com",
-      password: "User2 Password Test",
-    })
-    const createDepositStatement = {
-      user_id: createdUser.id,
-      type: OperationType.DEPOSIT,
-      amount: 99,
-      description: "Statement Description Test",
-    }
-    const createWithdrawStatement = {
-      user_id: createdUser.id,
-      type: OperationType.WITHDRAW,
-      amount: 69,
-      description: "Statement Description Test",
-    }
-
-    await createStatementUseCase.execute(createDepositStatement)
-    const withdrawStatementCreated = await createStatementUseCase.execute(createWithdrawStatement)
-    expect(withdrawStatementCreated).toHaveProperty('id')
-  })
-
   it('should not be able to create a new withdraw without funds', async () => {
     const createdUser = await inMemoryUsersRepository.create({
       name: "User2 Name Test",
@@ -83,7 +40,7 @@ describe('Create Statement', () => {
     await createStatementUseCase.execute(createDepositStatement)
 
     await expect(createStatementUseCase.execute(createWithdrawStatement)
-    ).rejects.toEqual(new CreateStatementError.InsufficientFunds);
+    ).rejects.toEqual(new AppError('Insufficient funds', 400));
   })
 
   it('should not be able to create a new statement when user does not exist', async () => {
@@ -94,7 +51,48 @@ describe('Create Statement', () => {
       description: "Statement Description Test",
     }
     await expect(createStatementUseCase.execute(createDepositStatement)
-    ).rejects.toEqual(new CreateStatementError.UserNotFound);
+    ).rejects.toEqual(new AppError('User not found', 404))
+  })
+  it('should be able to create a new deposit', async () => {
+    const createdUser = await inMemoryUsersRepository.create({
+      name: "User Name Test",
+      email: "useremail@testexample.com",
+      password: "User Password Test",
+    })
+
+    const createDepositStatement = {
+      user_id: createdUser.id,
+      type: OperationType.DEPOSIT,
+      amount: 99,
+      description: "Statement Description Test",
+    }
+
+    const depositStatementCreated = await createStatementUseCase.execute(createDepositStatement)
+
+    expect(depositStatementCreated).toHaveProperty('id')
+  })
+  it('should be able to create a new withdraw with funds', async () => {
+    const createdUser = await inMemoryUsersRepository.create({
+      name: "User2 Name Test",
+      email: "user2email@testexample.com",
+      password: "User2 Password Test",
+    })
+    const createDepositStatement = {
+      user_id: createdUser.id,
+      type: OperationType.DEPOSIT,
+      amount: 99,
+      description: "Statement Description Test",
+    }
+    const createWithdrawStatement = {
+      user_id: createdUser.id,
+      type: OperationType.WITHDRAW,
+      amount: 69,
+      description: "Statement Description Test",
+    }
+
+    await createStatementUseCase.execute(createDepositStatement)
+    const withdrawStatementCreated = await createStatementUseCase.execute(createWithdrawStatement)
+    expect(withdrawStatementCreated).toHaveProperty('id')
   })
 
 })

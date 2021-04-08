@@ -1,7 +1,7 @@
+import { AppError } from "../../../../shared/errors/AppError"
 import { InMemoryUsersRepository } from "../../../users/repositories/in-memory/InMemoryUsersRepository"
 import { OperationType } from "../../entities/Statement"
 import { InMemoryStatementsRepository } from "../../repositories/in-memory/InMemoryStatementsRepository"
-import { GetBalanceError } from "./GetBalanceError"
 
 import { GetBalanceUseCase } from "./GetBalanceUseCase"
 
@@ -62,7 +62,7 @@ describe('Get Balance', () => {
     })
 
     await expect(getBalanceUseCase.execute({ user_id: "invalid_user_id" })
-    ).rejects.toEqual(new GetBalanceError);
+    ).rejects.toEqual(new AppError('User not found', 404))
   })
 
 })

@@ -1,8 +1,8 @@
+import { AppError } from "../../../../shared/errors/AppError"
 import { InMemoryUsersRepository } from "../../../users/repositories/in-memory/InMemoryUsersRepository"
-import { CreateUserError } from "./CreateUserError"
+import { ICreateUserDTO } from "../../dtos/ICreateUserDTO"
 
 import { CreateUserUseCase } from "./CreateUserUseCase"
-import { ICreateUserDTO } from "./ICreateUserDTO"
 
 let createUserUseCase: CreateUserUseCase
 let inMemoryUsersRepository: InMemoryUsersRepository
@@ -37,6 +37,6 @@ describe('Create User', () => {
     await createUserUseCase.execute(createdNewUser)
 
     await expect(createUserUseCase.execute(createDuplicatedUser)
-    ).rejects.toEqual(new CreateUserError);
+    ).rejects.toEqual(new AppError('User already exists'))
   })
 })

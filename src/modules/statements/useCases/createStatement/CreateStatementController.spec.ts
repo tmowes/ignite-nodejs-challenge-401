@@ -92,7 +92,7 @@ describe('Create Statement Controller', () => {
 
     expect(status).toBe(401)
   })
-  it('should not be able to create a withdraw statement without insufficient funds', async () => {
+  it('should not be able to create a withdraw statement with insufficient funds', async () => {
     await request(app)
       .post('/api/v1/users')
       .send({
