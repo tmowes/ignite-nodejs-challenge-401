@@ -18,15 +18,15 @@ describe('Create Statement Controller', () => {
   })
 
   it('should be able to create a new deposit', async () => {
-    await request(app)
-      .post('/api/v1/users')
-      .send({
-        name: 'User Supertest Name',
-        email: 'useremail@testexample.com',
-        password: 'correct_password',
-      })
+    await request(app).post('/api/v1/users').send({
+      name: 'User Supertest Name',
+      email: 'useremail@testexample.com',
+      password: 'correct_password',
+    })
 
-    const { body: { token } } = await request(app).post('/api/v1/sessions').send({
+    const {
+      body: { token },
+    } = await request(app).post('/api/v1/sessions').send({
       email: 'useremail@testexample.com',
       password: 'correct_password',
     })
@@ -42,20 +42,18 @@ describe('Create Statement Controller', () => {
       })
 
     expect(body).toHaveProperty('id')
-    expect(body).toHaveProperty('user_id')
-    expect(body.type).toEqual('deposit')
+    expect(body).toHaveProperty('sender_id')
+    expect(body.operation_type).toEqual('deposit')
     expect(body.amount).toBe(100)
     expect(body.description).toBe('Deposit Statement Supertest Description')
     expect(status).toBe(201)
   })
   it('should not be able to create a new deposit statement without a valid token', async () => {
-    await request(app)
-      .post('/api/v1/users')
-      .send({
-        name: 'User Supertest Name',
-        email: 'useremail@testexample.com',
-        password: 'correct_password',
-      })
+    await request(app).post('/api/v1/users').send({
+      name: 'User Supertest Name',
+      email: 'useremail@testexample.com',
+      password: 'correct_password',
+    })
 
     await request(app).post('/api/v1/sessions').send({
       email: 'useremail@testexample.com',
@@ -71,13 +69,11 @@ describe('Create Statement Controller', () => {
     expect(status).toBe(401)
   })
   it('should not be able to create a new withdraw statement without a valid token', async () => {
-    await request(app)
-      .post('/api/v1/users')
-      .send({
-        name: 'User Supertest Name',
-        email: 'useremail@testexample.com',
-        password: 'correct_password',
-      })
+    await request(app).post('/api/v1/users').send({
+      name: 'User Supertest Name',
+      email: 'useremail@testexample.com',
+      password: 'correct_password',
+    })
 
     await request(app).post('/api/v1/sessions').send({
       email: 'useremail@testexample.com',
@@ -93,15 +89,15 @@ describe('Create Statement Controller', () => {
     expect(status).toBe(401)
   })
   it('should not be able to create a withdraw statement with insufficient funds', async () => {
-    await request(app)
-      .post('/api/v1/users')
-      .send({
-        name: 'User Supertest Name',
-        email: 'useremail@testexample.com',
-        password: 'correct_password',
-      })
+    await request(app).post('/api/v1/users').send({
+      name: 'User Supertest Name',
+      email: 'useremail@testexample.com',
+      password: 'correct_password',
+    })
 
-    const { body: { token } } = await request(app).post('/api/v1/sessions').send({
+    const {
+      body: { token },
+    } = await request(app).post('/api/v1/sessions').send({
       email: 'useremail@testexample.com',
       password: 'correct_password',
     })

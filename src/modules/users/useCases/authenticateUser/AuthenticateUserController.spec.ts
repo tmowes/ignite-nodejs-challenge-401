@@ -18,13 +18,11 @@ describe('Authenticate User Controller', () => {
   })
 
   it('should be able to authenticate a user', async () => {
-    await request(app)
-      .post('/api/v1/users')
-      .send({
-        name: 'User Supertest Name',
-        email: 'useremail@testexample.com',
-        password: 'correct_password',
-      })
+    await request(app).post('/api/v1/users').send({
+      name: 'User Supertest Name',
+      email: 'useremail@testexample.com',
+      password: 'correct_password',
+    })
 
     const { body, status } = await request(app).post('/api/v1/sessions').send({
       email: 'useremail@testexample.com',
@@ -35,11 +33,12 @@ describe('Authenticate User Controller', () => {
 
     expect(body).toHaveProperty('token')
     expect(body).toEqual({
-      token, user: {
+      token,
+      user: {
         ...user,
         name: 'User Supertest Name',
         email: 'useremail@testexample.com',
-      }
+      },
     })
     expect(status).toBe(200)
   })
@@ -51,13 +50,11 @@ describe('Authenticate User Controller', () => {
     expect(status).toBe(401)
   })
   it('should not be able to authenticate a user with incorrect email', async () => {
-    await request(app)
-      .post('/api/v1/users')
-      .send({
-        name: 'User Supertest Name',
-        email: 'useremail@testexample.com',
-        password: 'correct_password',
-      })
+    await request(app).post('/api/v1/users').send({
+      name: 'User Supertest Name',
+      email: 'useremail@testexample.com',
+      password: 'correct_password',
+    })
 
     const { status } = await request(app).post('/api/v1/sessions').send({
       email: 'nonexistinguseremail@testexample.com',
@@ -66,13 +63,11 @@ describe('Authenticate User Controller', () => {
     expect(status).toBe(401)
   })
   it('should not be able to authenticate a user with incorrect password', async () => {
-    await request(app)
-      .post('/api/v1/users')
-      .send({
-        name: 'User Supertest Name',
-        email: 'useremail@testexample.com',
-        password: 'correct_password',
-      })
+    await request(app).post('/api/v1/users').send({
+      name: 'User Supertest Name',
+      email: 'useremail@testexample.com',
+      password: 'correct_password',
+    })
 
     const { status } = await request(app).post('/api/v1/sessions').send({
       email: 'useremail@testexample.com',

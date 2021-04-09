@@ -18,24 +18,20 @@ describe('Create User Controller', () => {
   })
 
   it('should be able to create a new user', async () => {
-    const { status } = await request(app)
-      .post('/api/v1/users')
-      .send({
-        name: 'User Supertest Name',
-        email: 'useremail@testexample.com',
-        password: 'correct_password',
-      })
+    const { status } = await request(app).post('/api/v1/users').send({
+      name: 'User Supertest Name',
+      email: 'useremail@testexample.com',
+      password: 'correct_password',
+    })
     expect(status).toBe(201)
   })
 
   it('should not be able to create a new user with same email', async () => {
-    const { status } = await request(app)
-      .post('/api/v1/users')
-      .send({
-        name: 'User Supertest Name',
-        email: 'useremail@testexample.com',
-        password: 'correct_password',
-      })
+    const { status } = await request(app).post('/api/v1/users').send({
+      name: 'User Supertest Name',
+      email: 'useremail@testexample.com',
+      password: 'correct_password',
+    })
     expect(status).toBe(400)
   })
 })

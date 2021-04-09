@@ -1,48 +1,52 @@
-import { Statement } from "../../entities/Statement";
-import { ICreateStatementDTO } from "../../useCases/createStatement/ICreateStatementDTO";
-import { IGetBalanceDTO } from "../../useCases/getBalance/IGetBalanceDTO";
-import { IGetStatementOperationDTO } from "../../useCases/getStatementOperation/IGetStatementOperationDTO";
-import { IStatementsRepository } from "../IStatementsRepository";
+import { ICreateStatementDTO } from '../../dtos/ICreateStatementDTO'
+import { IGetBalanceDTO } from '../../dtos/IGetBalanceDTO'
+import { IGetBalanceResponseDTO } from '../../dtos/IGetBalanceResponseDTO'
+import { IGetStatementOperationDTO } from '../../dtos/IGetStatementOperationDTO'
+import { OperationType, Statement } from '../../entities/Statement'
+import { IStatementsRepository } from '../IStatementsRepository'
 
 export class InMemoryStatementsRepository implements IStatementsRepository {
-  private statements: Statement[] = [];
+  private statements: Statement[] = []
 
   async create(data: ICreateStatementDTO): Promise<Statement> {
-    const statement = new Statement();
+    const statement = new Statement()
 
-    Object.assign(statement, data);
+    Object.assign(statement, data)
 
-    this.statements.push(statement);
+    this.statements.push(statement)
 
-    return statement;
+    return statement
   }
 
-  async findStatementOperation({ statement_id, user_id }: IGetStatementOperationDTO): Promise<Statement | undefined> {
-    return this.statements.find(operation => (
-      operation.id === statement_id &&
-      operation.user_id === user_id
-    ));
+  async findStatementOperation({
+    statement_id,
+    user_id,
+  }: IGetStatementOperationDTO): Promise<Statement | undefined> {
+    return this.statements.find(
+      (operation) =>
+        operation.id === statement_id && operation.sender_id === user_id
+    )
   }
 
-  async getUserBalance({ user_id, with_statement = false }: IGetBalanceDTO):
-    Promise<
-      { balance: number } | { balance: number, statement: Statement[] }
-    >
-  {
-    const statement = this.statements.filter(operation => operation.user_id === user_id);
+  async getUserBalance({
+    user_id,
+    with_statement = false,
+  }: IGetBalanceDTO): Promise<{ balance: number } | IGetBalanceResponseDTO> {
+    const statements = this.statements.filter(
+      (operation) => operation.sender_id === user_id
+    )
 
-    const balance = statement.reduce((acc, operation) => {
-      if (operation.type === 'deposit') {
-        return acc + operation.amount;
-      } else {
-        return acc - operation.amount;
+    const balance = statements.reduce((acc, operation) => {
+      if (operation.operation_type === OperationType.DEPOSIT) {
+        return acc + Number(operation.amount)
       }
+      return acc - Number(operation.amount)
     }, 0)
 
     if (with_statement) {
       return {
-        statement,
-        balance
+        statements,
+        balance,
       }
     }
 

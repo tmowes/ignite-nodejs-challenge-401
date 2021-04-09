@@ -18,15 +18,15 @@ describe('Get Balance Controller', () => {
   })
 
   it('should be able to get a balance with statement list', async () => {
-    await request(app)
-      .post('/api/v1/users')
-      .send({
-        name: 'User Supertest Name',
-        email: 'useremail@testexample.com',
-        password: 'correct_password',
-      })
+    await request(app).post('/api/v1/users').send({
+      name: 'User Supertest Name',
+      email: 'useremail@testexample.com',
+      password: 'correct_password',
+    })
 
-    const { body: { token } } = await request(app).post('/api/v1/sessions').send({
+    const {
+      body: { token },
+    } = await request(app).post('/api/v1/sessions').send({
       email: 'useremail@testexample.com',
       password: 'correct_password',
     })
@@ -40,15 +40,13 @@ describe('Get Balance Controller', () => {
     expect(status).toBe(200)
   })
   it('should not be able to get a balance with statement list without a valid token', async () => {
-    await request(app)
-      .post('/api/v1/users')
-      .send({
-        name: 'User Supertest Name',
-        email: 'useremail@testexample.com',
-        password: 'correct_password',
-      })
+    await request(app).post('/api/v1/users').send({
+      name: 'User Supertest Name',
+      email: 'useremail@testexample.com',
+      password: 'correct_password',
+    })
 
-    const { body: { token } } = await request(app).post('/api/v1/sessions').send({
+    await request(app).post('/api/v1/sessions').send({
       email: 'useremail@testexample.com',
       password: 'correct_password',
     })
