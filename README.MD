@@ -60,8 +60,11 @@
 
     ✓ should not be able to create a new withdraw without funds
     ✓ should not be able to create a new statement when user does not exist
-    ✓ should be able to create a new deposit
     ✓ should be able to create a new withdraw with funds
+    ✓ should be able to create a new deposit
+    ✓ should be able to create a new transfer
+    ✓ should not be able to create a new transfer without funds
+    ✓ should not be able to create a new transfer to a non-existing user
 
   Get Balance
 
@@ -71,16 +74,16 @@
 ---
 Coverage summary
 --
-Statements   : 97.57% ( 402/412 )
+Statements   : 97.85% ( 456/466 )
 
-Branches     : 92.96% ( 66/71 )
+Branches     : 93.75% ( 75/80 )
 
-Functions    : 100% ( 32/32 )
+Functions    : 100% ( 33/33 )
 
-Lines        : 97.57% ( 402/412 )
+Lines        : 97.85% ( 456/466 )
 
 ---
 
 Test Suites: 12 passed, 12 total
 
-Tests:       34 passed, 34 total
+Tests:       37 passed, 37 total
